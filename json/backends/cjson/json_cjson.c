@@ -11,6 +11,7 @@ SCORE_BOOL score_json_parse(const char *data, SCore_JSON_Object *out_json_object
     (void)out_json_object;
 
     printf("TODO: SS - Parse JSON using cJSON.\n");
+    printf("Woooo!.\n");
 
     out_json_object->data = (void *)cJSON_CreateObject();
     cJSON_AddStringToObject((cJSON*)out_json_object->data, "Hello", "World");
