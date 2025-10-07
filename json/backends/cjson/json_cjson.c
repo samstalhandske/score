@@ -45,7 +45,7 @@ SCORE_BOOL score_json_get_object(const SCore_JSON_Object *json_object, const cha
     return SCORE_TRUE;
 }
 
-SCORE_BOOL score_json_get_double(const SCore_JSON_Object *json_object, double *out_value) {
+SCORE_BOOL score_json_as_double(const SCore_JSON_Object *json_object, double *out_value) {
     if(json_object == NULL) {
         return SCORE_FALSE;
     }
@@ -56,12 +56,16 @@ SCORE_BOOL score_json_get_double(const SCore_JSON_Object *json_object, double *o
         return SCORE_FALSE;
     }
 
-    *out_value = cJSON_GetNumberValue((cJSON *)json_object->data);;
+    if(!cJSON_IsNumber(json_object)) {
+        return SCORE_FALSE;
+    }
+
+    *out_value = cJSON_GetNumberValue((cJSON *)json_object->data);
 
     return SCORE_TRUE;
 }
 
-SCORE_BOOL score_json_get_string(const SCore_JSON_Object *json_object, char **out_string) {
+SCORE_BOOL score_json_as_string(const SCore_JSON_Object *json_object, char **out_string) {
     if(json_object == NULL) {
         return SCORE_FALSE;
     }
@@ -75,12 +79,46 @@ SCORE_BOOL score_json_get_string(const SCore_JSON_Object *json_object, char **ou
         return SCORE_FALSE;
     }
 
+    if(!cJSON_IsString(json_object)) {
+        return SCORE_FALSE;
+    }
+
     char *v = cJSON_GetStringValue((cJSON *)json_object->data);
     if(v == NULL) {
         return SCORE_FALSE;
     }
 
     *out_string = v;
+
+    return SCORE_TRUE;
+}
+
+SCORE_BOOL score_json_as_array(const SCore_JSON_Object *json_object, SCore_Json_Array *out_value) {
+    (json_object == NULL) {
+        return SCORE_FALSE;
+    }
+    if(json_object->data == NULL) {
+        return SCORE_FALSE;
+    }
+    if(out_value == NULL) {
+        return SCORE_FALSE;
+    }
+
+    if(!cJSON_IsArray(json_object)) {
+        return SCORE_FALSE;
+    }
+
+    cJSON* json_array_object = (cJSON *)json_object->data;
+
+    int32_t array_size = cJSON_GetArraySize(json_array_object);
+    assert(array_size >= 0);
+    out_value->size = (uint32_t)array_size;
+    out_value->data = malloc(out_value->size * sizeof(SCore_Json_Array));
+
+    uint32_t i;
+    for(i = 0; i < out_value->size; i++) {
+        out_value->data[i].data = (void *)cJSON_GetArrayItem(json_array_object, i);
+    }
 
     return SCORE_TRUE;
 }
