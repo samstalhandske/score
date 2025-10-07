@@ -93,7 +93,7 @@ SCORE_BOOL score_json_as_string(const SCore_JSON_Object *json_object, char **out
     return SCORE_TRUE;
 }
 
-SCORE_BOOL score_json_as_array(const SCore_JSON_Object *json_object, SCore_Json_Array *out_value) {
+SCORE_BOOL score_json_as_array(const SCore_JSON_Object *json_object, SCore_JSON_Array *out_value) {
     (json_object == NULL) {
         return SCORE_FALSE;
     }
@@ -113,7 +113,7 @@ SCORE_BOOL score_json_as_array(const SCore_JSON_Object *json_object, SCore_Json_
     int32_t array_size = cJSON_GetArraySize(json_array_object);
     assert(array_size >= 0);
     out_value->size = (uint32_t)array_size;
-    out_value->data = malloc(out_value->size * sizeof(SCore_Json_Array));
+    out_value->data = malloc(out_value->size * sizeof(SCore_JSON_Array));
 
     uint32_t i;
     for(i = 0; i < out_value->size; i++) {

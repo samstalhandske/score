@@ -19,7 +19,7 @@ SCORE_BOOL score_json_get_object(const SCore_JSON_Object *json_object, const cha
 
 SCORE_BOOL score_json_as_double(const SCore_JSON_Object *json_object, double *out_value);
 SCORE_BOOL score_json_as_string(const SCore_JSON_Object *json_object, char **out_value);
-SCORE_BOOL score_json_as_array(const SCore_JSON_Object *json_object, SCore_Json_Array *out_value);
+SCORE_BOOL score_json_as_array(const SCore_JSON_Object *json_object, SCore_JSON_Array *out_value);
 SCORE_BOOL score_json_as_array_to_buffer(const SCore_JSON_Object *json_object, SCore_Buffer_Writer *writer);
 
 SCORE_BOOL score_json_write_to_buffer(SCore_Buffer_Writer *writer, const SCore_JSON_Object json_object);
