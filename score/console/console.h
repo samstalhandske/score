@@ -3,7 +3,7 @@
 #ifndef SCORE_CONSOLE_H
 #define SCORE_CONSOLE_H
 
-SCORE_BOOL score_console_read(char *buffer, unsigned int buffer_length);
+bool score_console_read(char *buffer, unsigned int buffer_length);
 
 #endif
 

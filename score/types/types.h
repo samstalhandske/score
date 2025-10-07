@@ -40,8 +40,12 @@ typedef int64_t  i64;
 #define NULL 0
 #endif
 
-typedef uint8_t SCORE_BOOL;
-#define SCORE_TRUE  1
-#define SCORE_FALSE 0
+#ifndef __bool_true_false_are_defined
+    typedef uint8_t bool;
+    #define TRUE  1
+    #define FALSE 0
+    #define true  1
+    #define false 0
+#endif
 
 #endif /* SCORE_TYPES_H */

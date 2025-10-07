@@ -6,19 +6,19 @@
 #include "score/buffer/writer/writer.h"
 
 typedef enum {
-    Score_String_Compare_Result_Equal,
-    Score_String_Compare_Result_Equal_But_Different_Casing,
-    Score_String_Compare_Result_A_Longer_Than_B,
-    Score_String_Compare_Result_B_Longer_Than_A,
-    Score_String_Compare_Result_A_Null,
-    Score_String_Compare_Result_B_Null,
-    Score_String_Compare_Result_Different,
-} Score_String_Compare_Result;
+    SCore_String_Compare_Result_Equal,
+    SCore_String_Compare_Result_Equal_But_Different_Casing,
+    SCore_String_Compare_Result_A_Longer_Than_B,
+    SCore_String_Compare_Result_B_Longer_Than_A,
+    SCore_String_Compare_Result_A_Null,
+    SCore_String_Compare_Result_B_Null,
+    SCore_String_Compare_Result_Different,
+} SCore_String_Compare_Result;
 
-Score_String_Compare_Result score_string_compare(const char *a, const char *b, bool case_sensitive);
-bool score_string_length(const char *str, unsigned int *out_length);
+SCore_String_Compare_Result score_string_compare(const char *a, const char *b, SCORE_BOOL case_sensitive);
+SCORE_BOOL score_string_length(const char *str, unsigned int *out_length);
 
-unsigned int score_string_snprintf(Score_Buffer_Writer *writer, const char *format, ...);
+unsigned int score_string_snprintf(SCore_Buffer_Writer *writer, const char *format, ...);
 
 #endif
 #else

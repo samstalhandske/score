@@ -5,16 +5,16 @@
 
 typedef struct {
     CURL* curl;
-} Score_Http;
+} SCore_Http;
 
 typedef struct {
     char* data;
     unsigned int size;
-} Score_Http_Response;
+} SCore_Http_Response;
 
-bool score_http_initialize(Score_Http *http);
-bool score_http_perform(Score_Http *http, const char* url, Score_Http_Response* response);
-void score_http_dispose_response(Score_Http_Response* response);
-void score_http_dispose(Score_Http *http);
+SCORE_BOOL score_http_initialize(SCore_Http *http);
+SCORE_BOOL score_http_perform(SCore_Http *http, const char* url, SCore_Http_Response* response);
+void score_http_dispose_response(SCore_Http_Response* response);
+void score_http_dispose(SCore_Http *http);
 
 #endif

@@ -7,12 +7,12 @@ typedef struct {
     const void *data;
     unsigned int capacity;
     unsigned int length;
-} Score_Buffer;
+} SCore_Buffer;
 
-void score_buffer_init_using_backing(Score_Buffer *buffer, void *ptr_to_backing, unsigned int capacity);
-Score_Buffer score_buffer_create_from_backing(const void *ptr_to_backing, unsigned int capacity);
+void score_buffer_init_using_backing(SCore_Buffer *buffer, void *ptr_to_backing, unsigned int capacity);
+SCore_Buffer score_buffer_create_from_backing(const void *ptr_to_backing, unsigned int capacity);
 
-bool score_buffer_has_data(Score_Buffer *buffer);
+SCORE_BOOL score_buffer_has_data(SCore_Buffer *buffer);
 
 #endif
 #else

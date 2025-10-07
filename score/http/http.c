@@ -6,7 +6,7 @@
 #include <assert.h>
 
 static size_t score_http_response_write_callback(void* contents, size_t size, size_t nmemb, void* userp) {
-    SCore_Http_Response* response = (SCore_Http_Response*)userp;
+    Score_Http_Response* response = (Score_Http_Response*)userp;
 
     size_t realsize = size * nmemb;
     unsigned int totalSize = response->size + realsize + 1;
@@ -31,17 +31,17 @@ static size_t score_http_response_write_callback(void* contents, size_t size, si
     return realsize;
 }
 
-SCORE_BOOL score_http_initialize(SCore_Http* http) {
+bool score_http_initialize(Score_Http* http) {
     http->curl = curl_easy_init();
 
     if (http->curl == NULL) {
-        return SCORE_FALSE;
+        return false;
     }
 
-    return SCORE_TRUE;
+    return true;
 }
 
-SCORE_BOOL score_http_perform(SCore_Http* http, const char* url, SCore_Http_Response* response) {
+bool score_http_perform(Score_Http* http, const char* url, Score_Http_Response* response) {
     assert(http != NULL);
     assert(http->curl != NULL);
 
@@ -50,13 +50,13 @@ SCORE_BOOL score_http_perform(SCore_Http* http, const char* url, SCore_Http_Resp
     curl_easy_setopt(http->curl, CURLOPT_WRITEDATA, (void*)response);
 
     if (curl_easy_perform(http->curl) != CURLE_OK) {
-        return SCORE_FALSE;
+        return false;
     }
 
-    return SCORE_TRUE;
+    return true;
 }
 
-void score_http_dispose_response(SCore_Http_Response *response) {
+void score_http_dispose_response(Score_Http_Response *response) {
     assert(response != NULL);
 
     if(response->data != NULL) {
@@ -65,7 +65,7 @@ void score_http_dispose_response(SCore_Http_Response *response) {
     }
 }
 
-void score_http_dispose(SCore_Http *http) {
+void score_http_dispose(Score_Http *http) {
     assert(http != NULL);
 
     curl_easy_cleanup(http->curl);

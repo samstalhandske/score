@@ -7,9 +7,9 @@
 
 #include <stdlib.h>
 
-SCORE_BOOL score_string_length(const char *str, unsigned int* out_length) {
+bool score_string_length(const char *str, unsigned int* out_length) {
     if(str == NULL || out_length == NULL || *out_length != 0) {
-        return SCORE_FALSE;
+        return false;
     }
 
     unsigned int length = 0;
@@ -19,12 +19,12 @@ SCORE_BOOL score_string_length(const char *str, unsigned int* out_length) {
     }
 
     *out_length = length;
-    return SCORE_TRUE;
+    return true;
 }
 
-SCore_String_Compare_Result score_string_compare(const char *a, const char *b, SCORE_BOOL case_sensitive) {
-    if(a == NULL) return SCore_String_Compare_Result_A_Null;
-    if(b == NULL) return SCore_String_Compare_Result_B_Null;
+Score_String_Compare_Result score_string_compare(const char *a, const char *b, bool case_sensitive) {
+    if(a == NULL) return Score_String_Compare_Result_A_Null;
+    if(b == NULL) return Score_String_Compare_Result_B_Null;
 
     unsigned int a_len = 0;
     unsigned int b_len = 0;
@@ -33,10 +33,10 @@ SCore_String_Compare_Result score_string_compare(const char *a, const char *b, S
     assert(score_string_length(b, &b_len));
 
     if(a_len > b_len) {
-        return SCore_String_Compare_Result_A_Longer_Than_B;
+        return Score_String_Compare_Result_A_Longer_Than_B;
     }
     else if(b_len > a_len) {
-        return SCore_String_Compare_Result_B_Longer_Than_A;
+        return Score_String_Compare_Result_B_Longer_Than_A;
     }
 
     unsigned int i;
@@ -46,21 +46,21 @@ SCore_String_Compare_Result score_string_compare(const char *a, const char *b, S
 
         if(a_char != b_char) {
             if(!case_sensitive) {
-                SCORE_BOOL same_but_different_casing = a_char == b_char - 32 || a_char == b_char + 32;
+                bool same_but_different_casing = a_char == b_char - 32 || a_char == b_char + 32;
                 if(!same_but_different_casing) {
-                    return SCore_String_Compare_Result_Equal_But_Different_Casing;
+                    return Score_String_Compare_Result_Equal_But_Different_Casing;
                 }
             }
             else {
-                return SCore_String_Compare_Result_Different;
+                return Score_String_Compare_Result_Different;
             }
         }
     }
 
-    return SCore_String_Compare_Result_Equal;
+    return Score_String_Compare_Result_Equal;
 }
 
-unsigned int score_string_snprintf(SCore_Buffer_Writer *writer, const char *format, ...) {
+unsigned int score_string_snprintf(Score_Buffer_Writer *writer, const char *format, ...) {
     if (writer == NULL || writer->buffer == NULL || format == NULL) {
         return 0;
     }

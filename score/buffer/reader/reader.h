@@ -4,8 +4,8 @@
 #include "score/buffer/buffer.h"
 
 typedef struct {
-    SCore_Buffer *buffer;
+    Score_Buffer *buffer;
     unsigned int offset;
-} SCore_Buffer_Reader;
+} Score_Buffer_Reader;
 
 #endif

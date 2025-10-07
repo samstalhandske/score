@@ -3,17 +3,17 @@
 #include <stdio.h>
 #include "score/string/string.h"
 
-SCORE_BOOL score_console_read(char *buffer, unsigned int buffer_length) {
+bool score_console_read(char *buffer, unsigned int buffer_length) {
     if(buffer == NULL) {
-        return SCORE_FALSE;
+        return false;
     }
     if(buffer_length == 0) {
-        return SCORE_FALSE;
+        return false;
     }
 
     char *read = fgets(buffer, buffer_length, stdin);
     if(read == NULL) {
-        return SCORE_FALSE;
+        return false;
     }
 
     unsigned int read_length = 0;

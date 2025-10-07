@@ -3,18 +3,18 @@
 #include "writer.h"
 #include "score/string/string.h"
 
-Score_Buffer_Writer score_buffer_writer_create(Score_Buffer *buffer) {
-    Score_Buffer_Writer w = {0};
+SCore_Buffer_Writer score_buffer_writer_create(SCore_Buffer *buffer) {
+    SCore_Buffer_Writer w = {0};
     w.buffer = buffer;
     w.offset = 0;
     return w;
 }
 
-bool score_buffer_writer_write_unsigned_char(Score_Buffer_Writer *writer, unsigned char value) {
-    if(writer == NULL) return false;
-    if(writer->buffer == NULL) return false;
-    if(!score_buffer_has_data(writer->buffer)) return false;
-    if(writer->offset >= writer->buffer->capacity) return false;
+SCORE_BOOL score_buffer_writer_write_unsigned_char(SCore_Buffer_Writer *writer, unsigned char value) {
+    if(writer == NULL) return SCORE_FALSE;
+    if(writer->buffer == NULL) return SCORE_FALSE;
+    if(!score_buffer_has_data(writer->buffer)) return SCORE_FALSE;
+    if(writer->offset >= writer->buffer->capacity) return SCORE_FALSE;
 
     ((unsigned char*)writer->buffer->data)[writer->offset] = value;
 
@@ -24,14 +24,14 @@ bool score_buffer_writer_write_unsigned_char(Score_Buffer_Writer *writer, unsign
         writer->buffer->length = writer->offset;
     }
 
-    return true;
+    return SCORE_TRUE;
 }
 
-bool score_buffer_writer_write_char(Score_Buffer_Writer *writer, char value) {
-    if(writer == NULL) return false;
-    if(writer->buffer == NULL) return false;
-    if(!score_buffer_has_data(writer->buffer)) return false;
-    if(writer->offset >= writer->buffer->capacity) return false;
+SCORE_BOOL score_buffer_writer_write_char(SCore_Buffer_Writer *writer, char value) {
+    if(writer == NULL) return SCORE_FALSE;
+    if(writer->buffer == NULL) return SCORE_FALSE;
+    if(!score_buffer_has_data(writer->buffer)) return SCORE_FALSE;
+    if(writer->offset >= writer->buffer->capacity) return SCORE_FALSE;
 
     ((char*)writer->buffer->data)[writer->offset] = value;
 
@@ -41,13 +41,13 @@ bool score_buffer_writer_write_char(Score_Buffer_Writer *writer, char value) {
         writer->buffer->length = writer->offset;
     }
 
-    return true;
+    return SCORE_TRUE;
 }
 
-bool score_buffer_writer_write_string(Score_Buffer_Writer *writer, const char *value) {
+SCORE_BOOL score_buffer_writer_write_string(SCore_Buffer_Writer *writer, const char *value) {
     unsigned int len = 0;
     if(!score_string_length(value, &len)) {
-        return false;
+        return SCORE_FALSE;
     }
 
     unsigned int i;
@@ -57,12 +57,12 @@ bool score_buffer_writer_write_string(Score_Buffer_Writer *writer, const char *v
         }
     }
 
-    return true;
+    return SCORE_TRUE;
 }
 
-bool score_buffer_writer_write(Score_Buffer_Writer *writer, void *ptr, unsigned int size) {
+SCORE_BOOL score_buffer_writer_write(SCore_Buffer_Writer *writer, void *ptr, unsigned int size) {
     if(ptr == NULL) {
-        return false;
+        return SCORE_FALSE;
     }
 
     unsigned char *data = (unsigned char*)ptr;
@@ -70,11 +70,11 @@ bool score_buffer_writer_write(Score_Buffer_Writer *writer, void *ptr, unsigned 
     unsigned int i;
     for(i = 0; i < size; i++) {
         if(!score_buffer_writer_write_unsigned_char(writer, data[i])) {
-            return false;
+            return SCORE_FALSE;
         }
     }
 
-    return true;
+    return SCORE_TRUE;
 }
 
 #endif

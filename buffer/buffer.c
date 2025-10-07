@@ -2,19 +2,19 @@
 
 #include "buffer.h"
 
-bool score_buffer_has_data(Score_Buffer *buffer) {
+SCORE_BOOL score_buffer_has_data(SCore_Buffer *buffer) {
     if(buffer == NULL) {
-        return false;
+        return SCORE_FALSE;
     }
     if(buffer->data == NULL) {
-        return false;
+        return SCORE_FALSE;
     }
 
-    return true;
+    return SCORE_TRUE;
 }
 
-Score_Buffer score_buffer_create_from_backing(const void *ptr_to_backing, unsigned int capacity) {
-    Score_Buffer b;
+SCore_Buffer score_buffer_create_from_backing(const void *ptr_to_backing, unsigned int capacity) {
+    SCore_Buffer b;
     b.data = ptr_to_backing;
     b.capacity = capacity;
     b.length = 0;
@@ -22,7 +22,7 @@ Score_Buffer score_buffer_create_from_backing(const void *ptr_to_backing, unsign
     return b;
 }
 
-void score_buffer_init_using_backing(Score_Buffer *buffer, void *ptr_to_backing, unsigned int capacity) {
+void score_buffer_init_using_backing(SCore_Buffer *buffer, void *ptr_to_backing, unsigned int capacity) {
     *buffer = score_buffer_create_from_backing(ptr_to_backing, capacity);
 }
 
