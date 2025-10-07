@@ -7,14 +7,80 @@
 #include <stdlib.h>
 
 SCORE_BOOL score_json_parse(const char *data, SCore_JSON_Object *out_json_object) {
-    (void)data;
-    (void)out_json_object;
+    if(data == NULL) {
+        return SCORE_FALSE;
+    }
 
-    printf("TODO: SS - Parse JSON using cJSON.\n");
-    printf("Woooo!.\n");
+    out_json_object->data = (void *)cJSON_Parse(data);
+    return SCORE_TRUE;
+}
 
-    out_json_object->data = (void *)cJSON_CreateObject();
-    cJSON_AddStringToObject((cJSON*)out_json_object->data, "Hello", "World");
+SCORE_BOOL score_json_get_object(const SCore_JSON_Object *json_object, const char *item_name, SCORE_BOOL case_sensitive, SCore_JSON_Object *out_json_object) {
+    if(json_object == NULL) {
+        return SCORE_FALSE;
+    }
+    if(json_object->data == NULL) {
+        return SCORE_FALSE;
+    }
+    if(item_name == NULL) {
+        return SCORE_FALSE;
+    }
+    if(out_json_object == NULL) {
+        return SCORE_FALSE;
+    }
+
+    cJSON *cjson_data = (cJSON *)json_object->data;
+
+    if(case_sensitive == SCORE_TRUE) {
+        out_json_object->data = (void *)cJSON_GetObjectItemCaseSensitive(cjson_data, item_name);
+    }
+    else {
+        out_json_object->data = (void *)cJSON_GetObjectItem(cjson_data, item_name);
+    }
+
+    if(out_json_object->data == NULL) {
+        return SCORE_FALSE;
+    }
+
+    return SCORE_TRUE;
+}
+
+SCORE_BOOL score_json_get_double(const SCore_JSON_Object *json_object, double *out_value) {
+    if(json_object == NULL) {
+        return SCORE_FALSE;
+    }
+    if(json_object->data == NULL) {
+        return SCORE_FALSE;
+    }
+    if(out_value == NULL) {
+        return SCORE_FALSE;
+    }
+
+    *out_value = cJSON_GetNumberValue((cJSON *)json_object->data);;
+
+    return SCORE_TRUE;
+}
+
+SCORE_BOOL score_json_get_string(const SCore_JSON_Object *json_object, char **out_string) {
+    if(json_object == NULL) {
+        return SCORE_FALSE;
+    }
+    if(json_object->data == NULL) {
+        return SCORE_FALSE;
+    }
+    if(out_string == NULL) {
+        return SCORE_FALSE;
+    }
+    if(*out_string == NULL) {
+        return SCORE_FALSE;
+    }
+
+    char *v = cJSON_GetStringValue((cJSON *)json_object->data);
+    if(v == NULL) {
+        return SCORE_FALSE;
+    }
+
+    *out_string = v;
 
     return SCORE_TRUE;
 }
@@ -27,6 +93,22 @@ SCORE_BOOL score_json_write_to_buffer(SCore_Buffer_Writer *writer, const SCore_J
     }
 
     free(printed_json);
+    return SCORE_TRUE;
+}
+
+SCORE_BOOL score_json_dispose(SCore_JSON_Object *json_object) {
+    if(json_object == NULL) {
+        return SCORE_FALSE;
+    }
+    if(json_object->data == NULL) {
+        return SCORE_FALSE;
+    }
+
+    cJSON *data = (cJSON *)json_object->data;
+    cJSON_Delete(data);
+
+    json_object->data = NULL;
+
     return SCORE_TRUE;
 }
 
