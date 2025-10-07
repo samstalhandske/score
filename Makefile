@@ -8,11 +8,15 @@ ifneq ($(filter SCORE_HTTP,$(SCORE_DEFINES)),)
     SRC_FILES += $(wildcard http/*.c)
 endif
 
+ifneq ($(filter SCORE_JSON,$(SCORE_DEFINES)),)
+    SRC_FILES += $(wildcard json/*.c)
+endif
 ifneq ($(filter SCORE_JSON_CJSON,$(SCORE_DEFINES)),)
-    SRC_FILES += json/json_cjson.c
+    SRC_FILES += json/backends/cjson/json_cjson.c
+    SRC_FILES += $(wildcard json/backends/cjson/cJSON/*.c)
 endif
 ifneq ($(filter SCORE_JSON_JANSSON,$(SCORE_DEFINES)),)
-    SRC_FILES += json/json_jansson.c
+    SRC_FILES += json/backends/jansson/json_jansson.c
 endif
 
 ifneq ($(filter SCORE_LINKED_LIST,$(SCORE_DEFINES)),)

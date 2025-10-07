@@ -4,7 +4,6 @@
 #define SCORE_LINKED_LIST_H
 
 #include <stddef.h>
-#include <stdSCORE_BOOL.h>
 
 typedef struct SCore_Linked_List_Node SCore_Linked_List_Node;
 
