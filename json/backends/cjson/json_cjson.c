@@ -56,11 +56,13 @@ SCORE_BOOL score_json_as_double(const SCore_JSON_Object *json_object, double *ou
         return SCORE_FALSE;
     }
 
-    if(!cJSON_IsNumber(json_object)) {
+    cJSON *json_double_object = (cJSON *)json_object->data;
+
+    if(!cJSON_IsNumber(json_double_object)) {
         return SCORE_FALSE;
     }
 
-    *out_value = cJSON_GetNumberValue((cJSON *)json_object->data);
+    *out_value = cJSON_GetNumberValue(json_double_object);
 
     return SCORE_TRUE;
 }
@@ -79,11 +81,13 @@ SCORE_BOOL score_json_as_string(const SCore_JSON_Object *json_object, char **out
         return SCORE_FALSE;
     }
 
-    if(!cJSON_IsString(json_object)) {
+    cJSON *json_string_object = (cJSON *)json_object->data;
+
+    if(!cJSON_IsString(json_string_object)) {
         return SCORE_FALSE;
     }
 
-    char *v = cJSON_GetStringValue((cJSON *)json_object->data);
+    char *v = cJSON_GetStringValue(json_string_object);
     if(v == NULL) {
         return SCORE_FALSE;
     }
@@ -94,7 +98,7 @@ SCORE_BOOL score_json_as_string(const SCore_JSON_Object *json_object, char **out
 }
 
 SCORE_BOOL score_json_as_array(const SCore_JSON_Object *json_object, SCore_JSON_Array *out_value) {
-    (json_object == NULL) {
+    if(json_object == NULL) {
         return SCORE_FALSE;
     }
     if(json_object->data == NULL) {
@@ -104,11 +108,11 @@ SCORE_BOOL score_json_as_array(const SCore_JSON_Object *json_object, SCore_JSON_
         return SCORE_FALSE;
     }
 
-    if(!cJSON_IsArray(json_object)) {
+    cJSON* json_array_object = (cJSON *)json_object->data;
+
+    if(!cJSON_IsArray(json_array_object)) {
         return SCORE_FALSE;
     }
-
-    cJSON* json_array_object = (cJSON *)json_object->data;
 
     int32_t array_size = cJSON_GetArraySize(json_array_object);
     assert(array_size >= 0);
