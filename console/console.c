@@ -3,7 +3,10 @@
 #include <stdio.h>
 #include "score/string/string.h"
 
-SCORE_BOOL score_console_read(char *buffer, unsigned int buffer_length) {
+SCORE_BOOL score_console_read_from_stdin(char *buffer, unsigned int buffer_length) {
+    char *read = NULL;
+    uint32_t read_length = 0;
+
     if(buffer == NULL) {
         return SCORE_FALSE;
     }
@@ -11,12 +14,11 @@ SCORE_BOOL score_console_read(char *buffer, unsigned int buffer_length) {
         return SCORE_FALSE;
     }
 
-    char *read = fgets(buffer, buffer_length, stdin);
+    read = fgets(buffer, buffer_length, stdin);
     if(read == NULL) {
         return SCORE_FALSE;
     }
 
-    unsigned int read_length = 0;
     if(score_string_length(read, &read_length)) {
         read[read_length - 1] = '\0';
     }

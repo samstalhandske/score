@@ -12,7 +12,7 @@ typedef enum {
     SCore_String_Compare_Result_B_Longer_Than_A,
     SCore_String_Compare_Result_A_Null,
     SCore_String_Compare_Result_B_Null,
-    SCore_String_Compare_Result_Different,
+    SCore_String_Compare_Result_Different
 } SCore_String_Compare_Result;
 
 SCore_String_Compare_Result score_string_compare(const char *a, const char *b, SCORE_BOOL case_sensitive);

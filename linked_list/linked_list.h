@@ -7,11 +7,11 @@
 
 typedef struct SCore_Linked_List_Node SCore_Linked_List_Node;
 
-typedef struct SCore_Linked_List_Node {
+struct SCore_Linked_List_Node {
     void *data;
     SCore_Linked_List_Node *prev;
     SCore_Linked_List_Node *next;
-} SCore_Linked_List_Node;
+};
 
 typedef struct {
     SCore_Linked_List_Node *head;
@@ -21,7 +21,7 @@ typedef struct {
 
 typedef enum {
     Equal,
-    Not_Equal,
+    Not_Equal
 } SCore_Linked_List_Compare_Result;
 
 typedef SCore_Linked_List_Compare_Result (*SCore_Linked_List_Compare_Function)(void *a, void *b);

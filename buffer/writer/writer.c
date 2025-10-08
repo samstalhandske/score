@@ -45,12 +45,13 @@ SCORE_BOOL score_buffer_writer_write_char(SCore_Buffer_Writer *writer, char valu
 }
 
 SCORE_BOOL score_buffer_writer_write_string(SCore_Buffer_Writer *writer, const char *value) {
-    unsigned int len = 0;
+    uint32_t len = 0;
+    uint32_t i = 0;
+
     if(!score_string_length(value, &len)) {
         return SCORE_FALSE;
     }
 
-    unsigned int i;
     for(i = 0; i < len; i++) {
         if(!score_buffer_writer_write_char(writer, value[i])) {
             break;;
@@ -60,17 +61,22 @@ SCORE_BOOL score_buffer_writer_write_string(SCore_Buffer_Writer *writer, const c
     return SCORE_TRUE;
 }
 
-SCORE_BOOL score_buffer_writer_write(SCore_Buffer_Writer *writer, void *ptr, unsigned int size) {
+SCORE_BOOL score_buffer_writer_write(SCore_Buffer_Writer *writer, void *ptr, uint32_t size) {
+    unsigned char *char_data = NULL;
+
     if(ptr == NULL) {
         return SCORE_FALSE;
     }
 
-    unsigned char *data = (unsigned char*)ptr;
+    char_data = (unsigned char*)ptr;
+    assert(char_data != NULL);
 
-    unsigned int i;
-    for(i = 0; i < size; i++) {
-        if(!score_buffer_writer_write_unsigned_char(writer, data[i])) {
-            return SCORE_FALSE;
+    {
+        uint32_t i;
+        for(i = 0; i < size; i++) {
+            if(!score_buffer_writer_write_unsigned_char(writer, char_data[i])) {
+                return SCORE_FALSE;
+            }
         }
     }
 

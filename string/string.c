@@ -7,12 +7,13 @@
 
 #include <stdlib.h>
 
-SCORE_BOOL score_string_length(const char *str, unsigned int* out_length) {
+SCORE_BOOL score_string_length(const char *str, uint32_t* out_length) {
+    uint32_t length = 0;
+
     if(str == NULL || out_length == NULL || *out_length != 0) {
         return SCORE_FALSE;
     }
 
-    unsigned int length = 0;
     while(*str != '\0') {
         length += 1;
         str += 1;
@@ -23,11 +24,12 @@ SCORE_BOOL score_string_length(const char *str, unsigned int* out_length) {
 }
 
 SCore_String_Compare_Result score_string_compare(const char *a, const char *b, SCORE_BOOL case_sensitive) {
+    uint32_t a_len = 0;
+    uint32_t b_len = 0;
+    uint32_t i = 0;
+
     if(a == NULL) return SCore_String_Compare_Result_A_Null;
     if(b == NULL) return SCore_String_Compare_Result_B_Null;
-
-    unsigned int a_len = 0;
-    unsigned int b_len = 0;
 
     assert(score_string_length(a, &a_len));
     assert(score_string_length(b, &b_len));
@@ -39,7 +41,6 @@ SCore_String_Compare_Result score_string_compare(const char *a, const char *b, S
         return SCore_String_Compare_Result_B_Longer_Than_A;
     }
 
-    unsigned int i;
     for(i = 0; i < a_len; i++) {
         char a_char = a[i];
         char b_char = b[i];
@@ -60,40 +61,44 @@ SCore_String_Compare_Result score_string_compare(const char *a, const char *b, S
     return SCore_String_Compare_Result_Equal;
 }
 
-unsigned int score_string_snprintf(SCore_Buffer_Writer *writer, const char *format, ...) {
+uint32_t score_string_snprintf(SCore_Buffer_Writer *writer, const char *format, ...) {
+    uint32_t remaining_space_in_writer;
+    int32_t bytes_written = 0;
+    char *temporary_memory_to_store_bytes = NULL;
+
     if (writer == NULL || writer->buffer == NULL || format == NULL) {
         return 0;
     }
 
-    unsigned int remaining = writer->buffer->capacity - writer->offset;
-    if (remaining == 0) return 0;
+    remaining_space_in_writer = writer->buffer->capacity - writer->offset;
+    if (remaining_space_in_writer == 0) return 0;
 
-    char *temp = (char *)malloc(remaining);
-    if (!temp) {
-        return 0;
+    temporary_memory_to_store_bytes = (char *)malloc(remaining_space_in_writer);
+    assert(temporary_memory_to_store_bytes != NULL);
+
+    {
+        va_list args;
+        va_start(args, format);
+        bytes_written = vsprintf(temporary_memory_to_store_bytes, format, args);
+        va_end(args);
+
+        if (bytes_written < 0) {
+            bytes_written = 0;
+        }
+
+        if ((uint32_t)bytes_written >= remaining_space_in_writer) {
+            bytes_written = remaining_space_in_writer - 1;
+            temporary_memory_to_store_bytes[bytes_written] = '\0';
+        }
+
+        if (!score_buffer_writer_write(writer, temporary_memory_to_store_bytes, (uint32_t)bytes_written)) {
+            free(temporary_memory_to_store_bytes);
+            return 0;
+        }
     }
 
-    va_list args;
-    va_start(args, format);
-    int n = vsprintf(temp, format, args);
-    va_end(args);
-
-    if (n < 0) {
-        n = 0;
-    }
-
-    if ((unsigned int)n >= remaining) {
-        n = remaining - 1;
-        temp[n] = '\0';
-    }
-
-    if (!score_buffer_writer_write(writer, temp, (unsigned int)n)) {
-        free(temp);
-        return 0;
-    }
-
-    free(temp);
-    return (unsigned int)n;
+    free(temporary_memory_to_store_bytes);
+    return (uint32_t)bytes_written;
 }
 
 #endif

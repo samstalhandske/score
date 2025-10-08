@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <assert.h>
 
-static SCore_Linked_List_Node *score_linked_listcreate_node(void *data) {
+static SCore_Linked_List_Node *score_linked_list_create_node(void *data) {
     SCore_Linked_List_Node *node = (SCore_Linked_List_Node *)malloc(sizeof(SCore_Linked_List_Node));
     if (node == NULL) {
         free(node);
@@ -18,32 +18,34 @@ static SCore_Linked_List_Node *score_linked_listcreate_node(void *data) {
     return node;
 }
 
-SCORE_BOOL score_linked_listadd(SCore_Linked_List *list, void *data) {
+SCORE_BOOL score_linked_list_add(SCore_Linked_List *list, void *data) {
+    SCore_Linked_List_Node *created_node = NULL;
+
     if (list == NULL) {
         return SCORE_FALSE;
     }
 
-    SCore_Linked_List_Node *node = score_linked_listcreate_node(data);
-    if (node == NULL) {
+    created_node = score_linked_list_create_node(data);
+    if (created_node == NULL) {
         return SCORE_FALSE;
     }
 
     if (list->tail == NULL) {
-        list->head = node;
-        list->tail = node;
+        list->head = created_node;
+        list->tail = created_node;
     }
     else {
-        node->prev = list->tail;
+        created_node->prev = list->tail;
 
-        list->tail->next = node;
-        list->tail = node;
+        list->tail->next = created_node;
+        list->tail = created_node;
     }
 
     list->size++;
     return SCORE_TRUE;
 }
 
-int score_linked_listremove(SCore_Linked_List *list, SCore_Linked_List_Node *node) {
+SCORE_BOOL score_linked_list_remove(SCore_Linked_List *list, SCore_Linked_List_Node *node) {
     if (list == NULL || node == NULL) {
         return SCORE_FALSE;
     }
@@ -70,13 +72,13 @@ int score_linked_listremove(SCore_Linked_List *list, SCore_Linked_List_Node *nod
     return SCORE_TRUE;
 }
 
-void score_linked_listclear(SCore_Linked_List *list) {
+void score_linked_list_clear(SCore_Linked_List *list) {
+    SCore_Linked_List_Node *curr = NULL;
+    SCore_Linked_List_Node *next = NULL;
+
     if (list == NULL) {
         return;
     }
-
-    SCore_Linked_List_Node *curr = NULL;
-    SCore_Linked_List_Node *next = NULL;
 
     curr = list->head;
     while (curr != NULL) {
@@ -91,7 +93,7 @@ void score_linked_listclear(SCore_Linked_List *list) {
     list->size = 0;
 }
 
-SCore_Linked_List_Node *score_linked_listfront(const SCore_Linked_List *list) {
+SCore_Linked_List_Node *score_linked_list_front(const SCore_Linked_List *list) {
     if (list == NULL) {
         return NULL;
     }
@@ -99,7 +101,7 @@ SCore_Linked_List_Node *score_linked_listfront(const SCore_Linked_List *list) {
     return list->head;
 }
 
-SCore_Linked_List_Node *score_linked_listback(const SCore_Linked_List *list) {
+SCore_Linked_List_Node *score_linked_list_back(const SCore_Linked_List *list) {
     if (list == NULL) {
         return NULL;
     }
@@ -107,7 +109,7 @@ SCore_Linked_List_Node *score_linked_listback(const SCore_Linked_List *list) {
     return list->tail;
 }
 
-SCORE_BOOL score_linked_listis_empty(const SCore_Linked_List *list) {
+SCORE_BOOL score_linked_list_is_empty(const SCore_Linked_List *list) {
     if (list == NULL) {
         return SCORE_TRUE;
     }
@@ -115,7 +117,7 @@ SCORE_BOOL score_linked_listis_empty(const SCore_Linked_List *list) {
     return list->size == 0;
 }
 
-unsigned int score_linked_listsize(const SCore_Linked_List *list) {
+unsigned int score_linked_list_size(const SCore_Linked_List *list) {
     if (list == NULL) {
         return SCORE_FALSE;
     }
@@ -123,15 +125,14 @@ unsigned int score_linked_listsize(const SCore_Linked_List *list) {
     return list->size;
 }
 
-SCore_Linked_List_Node *score_linked_listfind(const SCore_Linked_List *list,
-                                    void *data,
-                                    SCore_Linked_List_Compare_Function compare)
-{
+SCore_Linked_List_Node *score_linked_list_find(const SCore_Linked_List *list, void *data, SCore_Linked_List_Compare_Function compare) {
+    SCore_Linked_List_Node *curr = NULL;
+
     if (list == NULL || compare == NULL) {
         return NULL;
     }
 
-    SCore_Linked_List_Node *curr = list->head;
+    curr = list->head;
     while (curr != NULL) {
         if (compare(curr->data, data)) {
             return curr;
@@ -143,14 +144,14 @@ SCore_Linked_List_Node *score_linked_listfind(const SCore_Linked_List *list,
     return NULL;
 }
 
-void score_linked_listforeach(const SCore_Linked_List *list,
-                         SCore_Linked_List_Foreach_Callback callback,
-                         void *user) {
+void score_linked_list_foreach(const SCore_Linked_List *list, SCore_Linked_List_Foreach_Callback callback, void *user) {
+    SCore_Linked_List_Node *curr = NULL;
+
     if (list == NULL || callback == NULL) {
         return;
     }
 
-    SCore_Linked_List_Node *curr = list->head;
+    curr = list->head;
     while (curr != NULL) {
         callback(curr->data, user);
         curr = curr->next;

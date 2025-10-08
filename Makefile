@@ -40,7 +40,7 @@ endif
 INCLUDE_PATHS := .. .
 INCLUDE_FILES := $(wildcard types/types.h)
 
-CFLAGS = -std=c$(C_VERSION) -Wall -Wextra -Werror $(addprefix -I,$(INCLUDE_PATHS)) $(addprefix -include,$(INCLUDE_FILES))
+CFLAGS = -std=c$(C_VERSION) -Wall -Wextra -Werror -Wpedantic $(addprefix -I,$(INCLUDE_PATHS)) $(addprefix -include,$(INCLUDE_FILES))
 SCORE_DEFINES_PREFIXED = $(addprefix -D,$(SCORE_DEFINES))
 
 MY_OBJ_DIR = $(OBJ_DIR)/score
