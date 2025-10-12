@@ -1,3 +1,4 @@
+#ifdef SCORE_HTTP
 #ifndef SCORE_HTTP_H
 #define SCORE_HTTP_H
 
@@ -17,4 +18,7 @@ SCORE_BOOL score_http_perform(SCore_Http *http, const char* url, SCore_Http_Resp
 void score_http_dispose_response(SCore_Http_Response* response);
 void score_http_dispose(SCore_Http *http);
 
+#endif
+#else
+#error "http.h included. SCORE_HTTP needs to be defined."
 #endif

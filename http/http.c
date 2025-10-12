@@ -1,3 +1,5 @@
+#ifdef SCORE_HTTP
+
 #include "http.h"
 #include <stdlib.h>
 #include <string.h>
@@ -71,3 +73,5 @@ void score_http_dispose(SCore_Http *http) {
     curl_easy_cleanup(http->curl);
     http->curl = NULL;
 }
+
+#endif
