@@ -1,9 +1,10 @@
 #ifdef SCORE_TIME
 
-#ifndef TIME_H
-#define TIME_H
+#ifndef SCORE_TIME_H
+#define SCORE_TIME_H
 
 #include "score/buffer/writer/writer.h"
+#include "score/json/json.h"
 
 typedef struct {
     uint16_t year;
@@ -32,6 +33,8 @@ SCORE_BOOL score_time_unix_to_iso_8601(const SCore_Time_UNIX unix_time, SCore_Ti
 
 SCORE_BOOL score_time_write_iso_8601_to_buffer(const SCore_Time *time, SCore_Buffer_Writer *writer);
 SCORE_BOOL score_time_write_unix_to_buffer(const SCore_Time *time, SCore_Buffer_Writer *writer);
+
+SCORE_BOOL score_time_from_json(const SCore_JSON_Object *json_object, SCore_Time *out_time);
 
 #endif
 

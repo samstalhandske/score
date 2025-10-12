@@ -45,6 +45,10 @@ ifneq ($(filter SCORE_UTILS,$(SCORE_DEFINES)),)
     SRC_FILES += $(wildcard utils/endian/*.c)
 endif
 
+ifneq ($(filter SCORE_INTEGRATIONS_OPEN_METEO,$(SCORE_DEFINES)),)
+    SRC_FILES += $(wildcard integrations/open_meteo/*.c)
+endif
+
 INCLUDE_PATHS := .. .
 INCLUDE_FILES := $(wildcard types/types.h)
 
