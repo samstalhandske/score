@@ -490,4 +490,19 @@ SCORE_BOOL open_meteo_create_report_from_json_object(const SCore_JSON_Object *js
 
     return SCORE_TRUE;
 }
+
+SCORE_BOOL open_meteo_dispose_report(Open_Meteo_Report *report) {
+    assert(report != NULL);
+
+    free(report->hourly.entries);
+    report->hourly.entries = NULL;
+
+    free(report->daily.entries);
+    report->daily.entries = NULL;
+
+    memset(report, 0, sizeof(Open_Meteo_Report));
+
+    return SCORE_TRUE;
+}
+
 #endif

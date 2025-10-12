@@ -1,13 +1,14 @@
 #ifdef SCORE_INTEGRATIONS_OPEN_METEO
 
-#ifndef OPEN_METEO_H
-#define OPEN_METEO_H
-
-/* https://open-meteo.com/en/docs */
+#ifndef SCORE_INTEGRATIONS_OPEN_METEO_H
+#define SCORE_INTEGRATIONS_OPEN_METEO_H
 
 /*
-TODO: SS - Move open_meteo files to SCore.
-Replace 'date.h' with score/time/time.h.
+
+https://open-meteo.com/
+
+Get weather-data using a longitude and latitude.
+
 */
 
 #include "score/buffer/writer/writer.h"
@@ -187,7 +188,9 @@ void open_meteo_write_url_to_writer(SCore_Buffer_Writer *writer, const Open_Mete
 
 SCORE_BOOL open_meteo_create_report_from_json_object(const SCore_JSON_Object *json_object, uint32_t current_flags, Open_Meteo_Hourly_Flags hourly_flags, uint32_t daily_flags, Open_Meteo_Report *out_report);
 
-#endif /* OPEN_METEO_H */
+SCORE_BOOL open_meteo_dispose_report(Open_Meteo_Report *report);
+
+#endif /* SCORE_INTEGRATIONS_OPEN_METEO_H */
 #else
 #error "open_meteo.h included. SCORE_INTEGRATIONS_OPEN_METEO needs to be defined."
 #endif
