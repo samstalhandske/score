@@ -1,3 +1,7 @@
+CC ?= gcc
+OBJ_DIR ?= build
+C_VERSION = 89
+
 SRC_FILES :=
 
 ifneq ($(filter SCORE_CONSOLE,$(SCORE_DEFINES)),)
@@ -48,6 +52,9 @@ endif
 ifneq ($(filter SCORE_INTEGRATIONS_OPEN_METEO,$(SCORE_DEFINES)),)
     SRC_FILES += $(wildcard integrations/open_meteo/*.c)
 endif
+ifneq ($(filter SCORE_INTEGRATIONS_LOCATIONIQ,$(SCORE_DEFINES)),)
+    SRC_FILES += $(wildcard integrations/locationiq/*.c)
+endif
 
 INCLUDE_PATHS := .. .
 INCLUDE_FILES := $(wildcard types/types.h)
@@ -66,7 +73,7 @@ all: $(OBJS)
 $(MY_OBJ_DIR)/%.o: %.c
 	@echo "Compiling $< ..."
 	@mkdir -p $(dir $@)
-	@gcc -c $< $(CFLAGS) -o $@  $(SCORE_DEFINES_PREFIXED)
+	@$(CC) -c $< $(CFLAGS) -o $@  $(SCORE_DEFINES_PREFIXED)
 
 clean_score:
 	@rm -rf $(MY_OBJ_DIR)
