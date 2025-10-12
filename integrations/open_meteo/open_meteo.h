@@ -25,7 +25,10 @@ typedef enum {
     Open_Meteo_Unit_Celsius,
     Open_Meteo_Unit_Fahrenheit,
     Open_Meteo_Unit_Millimeter,
-    Open_Meteo_Unit_Kilometers_Per_Hour
+    Open_Meteo_Unit_Angle,
+    Open_Meteo_Unit_Kilometers_Per_Hour,
+    Open_Meteo_Unit_Time_Format_ISO,
+    Open_Meteo_Unit_Time_Format_UNIX
 } Open_Meteo_Unit;
 
 SCORE_BOOL open_meteo_string_to_unit(const char *str, Open_Meteo_Unit *unit);
@@ -81,6 +84,7 @@ typedef struct {
     unsigned char forecast_days;
 
     Open_Meteo_Unit temperature_unit;
+    Open_Meteo_Unit time_format;
 
     SCore_Flags current_flags;
     Open_Meteo_Hourly_Flags hourly_flags;
@@ -90,15 +94,25 @@ typedef struct {
 
 typedef struct {
     SCORE_BOOL is_set;
-    Open_Meteo_Unit unit; /* Kind of unnecessary cause now every temperature instance will have this with the same value. */
+    Open_Meteo_Unit unit;
     f32 temperature;
     uint8_t meters_above_ground;
 } Open_Meteo_Report_Temperature;
 
+
 typedef struct {
     SCORE_BOOL is_set;
-
+    Open_Meteo_Unit unit;
+    f32 speed;
+    uint8_t meters_above_ground;
 } Open_Meteo_Report_Wind_Speed;
+
+typedef struct {
+    SCORE_BOOL is_set;
+    Open_Meteo_Unit unit;
+    uint16_t angle; /* 0..360 */
+    uint8_t meters_above_ground;
+} Open_Meteo_Report_Wind_Direction;
 
 typedef struct {
     SCORE_BOOL is_set;
@@ -106,8 +120,15 @@ typedef struct {
     f32 value;
 } Open_Meteo_Report_Rain;
 
+
+void open_meteo_print_apparent_temperature(Open_Meteo_Report_Temperature v);
+void open_meteo_print_temperature(Open_Meteo_Report_Temperature v);
+void open_meteo_print_wind_speed(Open_Meteo_Report_Wind_Speed v);
+void open_meteo_print_wind_direction(Open_Meteo_Report_Wind_Direction v);
+void open_meteo_print_rain(Open_Meteo_Report_Rain v);
+
 typedef struct {
-    SCore_Time date_time; /* TODO: SS - Rename. */
+    SCore_Time time;
 
     Open_Meteo_Report_Temperature apparent_temperature;
 
@@ -121,17 +142,22 @@ typedef struct {
     Open_Meteo_Report_Wind_Speed wind_speed_120m;
     Open_Meteo_Report_Wind_Speed wind_speed_180m;
 
+    Open_Meteo_Report_Wind_Direction wind_direction_10m;
+    Open_Meteo_Report_Wind_Direction wind_direction_80m;
+    Open_Meteo_Report_Wind_Direction wind_direction_120m;
+    Open_Meteo_Report_Wind_Direction wind_direction_180m;
+
     Open_Meteo_Report_Rain rain;
 } Open_Meteo_Report_Hourly_Entry;
 
 typedef struct {
-    SCore_Time date_time; /* TODO: SS - Rename. */
+    SCore_Time time;
 } Open_Meteo_Report_Daily_Entry;
 
 /* TODO: SS - Parse the current/hourly/daily_units. */
 
 typedef struct {
-    SCore_Time date_time; /* TODO: SS - Rename. */
+    SCore_Time time;
     uint32_t flags;
 } Open_Meteo_Report_Current;
 

@@ -132,6 +132,139 @@ bool save_rain_to_report(Open_Meteo_Report_Hourly *report, const SCore_JSON_Obje
     return true;
 }
 
+bool save_wind_speed_to_report(Open_Meteo_Report_Hourly *report, const SCore_JSON_Object *parent_to_temperature_object, const SCore_JSON_Object *units_object, const char *name, uint8_t meters_above_ground) {
+    SCore_JSON_Object obj;
+    SCore_JSON_Array arr;
+
+    assert(score_json_get_object(parent_to_temperature_object, name, SCORE_FALSE, &obj));
+    assert(score_json_as_array(&obj, &arr));
+
+    {
+        uint32_t i;
+        SCore_JSON_Object unit_object;
+        char *unit_text = NULL;
+        Open_Meteo_Unit unit;
+        printf("Setting entries' %s.\n", name);
+
+        assert(score_json_get_object(units_object, name, SCORE_FALSE, &unit_object));
+        assert(score_json_as_string(&unit_object, &unit_text));
+
+        assert(open_meteo_string_to_unit(unit_text, &unit));
+        assert(unit == Open_Meteo_Unit_Kilometers_Per_Hour); /* TODO: SS - Support miles per hour. */
+
+        for(i = 0; i < report->entry_count; i++) {
+            Open_Meteo_Report_Hourly_Entry *entry = &report->entries[i];
+            Open_Meteo_Report_Wind_Speed *v = NULL;
+            double speed = 0;
+
+            assert(score_json_as_number(&arr.data[i], &speed));
+
+            switch(meters_above_ground) {
+                case 10:    { v = &entry->wind_speed_10m;   break; }
+                case 80:    { v = &entry->wind_speed_80m;   break; }
+                case 120:   { v = &entry->wind_speed_120m;  break; }
+                case 180:   { v = &entry->wind_speed_180m;  break; }
+                default:
+                    break;
+            }
+            assert(v != NULL);
+
+            v->is_set = true;
+            v->unit = unit;
+            v->speed = (f32)speed;
+            v->meters_above_ground = meters_above_ground;
+        }
+    }
+
+    score_json_array_dispose(&arr);
+    return true;
+}
+
+bool save_wind_direction_to_report(Open_Meteo_Report_Hourly *report, const SCore_JSON_Object *parent_to_temperature_object, const SCore_JSON_Object *units_object, const char *name, uint8_t meters_above_ground) {
+    SCore_JSON_Object obj;
+    SCore_JSON_Array arr;
+
+    assert(score_json_get_object(parent_to_temperature_object, name, SCORE_FALSE, &obj));
+    assert(score_json_as_array(&obj, &arr));
+
+    {
+        uint32_t i;
+        SCore_JSON_Object unit_object;
+        char *unit_text = NULL;
+        Open_Meteo_Unit unit;
+        printf("Setting entries' %s.\n", name);
+
+        assert(score_json_get_object(units_object, name, SCORE_FALSE, &unit_object));
+        assert(score_json_as_string(&unit_object, &unit_text));
+
+        assert(open_meteo_string_to_unit(unit_text, &unit));
+        assert(unit == Open_Meteo_Unit_Angle);
+
+        for(i = 0; i < report->entry_count; i++) {
+            Open_Meteo_Report_Hourly_Entry *entry = &report->entries[i];
+            Open_Meteo_Report_Wind_Direction *v = NULL;
+            double dir = 0;
+
+            assert(score_json_as_number(&arr.data[i], &dir));
+
+            switch(meters_above_ground) {
+                case 10:    { v = &entry->wind_direction_10m;   break; }
+                case 80:    { v = &entry->wind_direction_80m;   break; }
+                case 120:   { v = &entry->wind_direction_120m;  break; }
+                case 180:   { v = &entry->wind_direction_180m;  break; }
+                default:
+                    break;
+            }
+            assert(v != NULL);
+
+            v->is_set = true;
+            v->unit = unit;
+            v->angle = (uint16_t)dir;
+            v->meters_above_ground = meters_above_ground;
+        }
+    }
+
+    score_json_array_dispose(&arr);
+    return true;
+}
+
+void open_meteo_print_apparent_temperature(Open_Meteo_Report_Temperature v) {
+    printf("apparent_temperature: %.1f %s.\n",
+        v.temperature,
+        v.unit == Open_Meteo_Unit_Celsius ? "°C" : "°F"
+    );
+}
+
+void open_meteo_print_temperature(Open_Meteo_Report_Temperature v) {
+    printf("temperature (%um): %.1f %s.\n",
+        v.meters_above_ground,
+        v.temperature,
+        v.unit == Open_Meteo_Unit_Celsius ? "°C" : "°F"
+    );
+}
+
+void open_meteo_print_wind_speed(Open_Meteo_Report_Wind_Speed v) {
+    printf("wind_speed (%um): %.1f %s.\n",
+        v.meters_above_ground,
+        v.speed,
+        v.unit == Open_Meteo_Unit_Kilometers_Per_Hour ? "km/h" : "??"
+    );
+}
+
+void open_meteo_print_wind_direction(Open_Meteo_Report_Wind_Direction v) {
+    printf("wind_direction (%um): %u%s.\n",
+        v.meters_above_ground,
+        v.angle,
+        v.unit == Open_Meteo_Unit_Angle ? "°" : "??"
+    );
+}
+
+void open_meteo_print_rain(Open_Meteo_Report_Rain v) {
+    printf("rain: %.1f %s.\n",
+        v.value,
+        v.unit == Open_Meteo_Unit_Millimeter ? "mm" : "??"
+    );
+}
 
 void open_meteo_write_url_to_writer(SCore_Buffer_Writer *writer, const Open_Meteo_Data_Request *data_request) {
     assert(
@@ -142,10 +275,11 @@ void open_meteo_write_url_to_writer(SCore_Buffer_Writer *writer, const Open_Mete
     assert(score_string_snprintf(writer,
         "https://api.open-meteo.com/v1/forecast?latitude=%f&longitude=%f"
         "&forecast_days=%u&past_days=%u"
-        "&temperature_unit=%s",
+        "&temperature_unit=%s&timeformat=%s",
         data_request->coordinate.latitude, data_request->coordinate.longitude,
         data_request->forecast_days, data_request->past_days,
-        data_request->temperature_unit == Open_Meteo_Unit_Celsius ? "celsius" : "fahrenheit"
+        data_request->temperature_unit == Open_Meteo_Unit_Celsius ? "celsius" : "fahrenheit",
+        data_request->time_format == Open_Meteo_Unit_Time_Format_UNIX ? "unixtime" : "iso8601"
     ));
 
     { /* Hourly. */
@@ -252,7 +386,7 @@ static bool create_hourly_report_from_json_object(const SCore_JSON_Object *json_
         for(i = 0; i < out_report->entry_count; i++) {
             Open_Meteo_Report_Hourly_Entry *entry = &out_report->entries[i];
             assert(entry != NULL);
-            assert(score_time_from_json(&time_array.data[i], &entry->date_time));
+            assert(score_time_from_json(&time_array.data[i], &entry->time));
         }
     }
 
@@ -263,6 +397,14 @@ static bool create_hourly_report_from_json_object(const SCore_JSON_Object *json_
     if(flags.temperature_120m)        assert(save_temperature_to_report(out_report, &hourly_object, &units_object, "temperature_120m", 120));
     if(flags.temperature_180m)        assert(save_temperature_to_report(out_report, &hourly_object, &units_object, "temperature_180m", 180));
     if(flags.rain)                    assert(save_rain_to_report(out_report, &hourly_object, &units_object, "rain"));
+    if(flags.wind_speed_10m)          assert(save_wind_speed_to_report(out_report, &hourly_object, &units_object, "wind_speed_10m", 10));
+    if(flags.wind_speed_80m)          assert(save_wind_speed_to_report(out_report, &hourly_object, &units_object, "wind_speed_80m", 80));
+    if(flags.wind_speed_120m)         assert(save_wind_speed_to_report(out_report, &hourly_object, &units_object, "wind_speed_120m", 120));
+    if(flags.wind_speed_180m)         assert(save_wind_speed_to_report(out_report, &hourly_object, &units_object, "wind_speed_180m", 180));
+    if(flags.wind_direction_10m)      assert(save_wind_direction_to_report(out_report, &hourly_object, &units_object, "wind_direction_10m", 10));
+    if(flags.wind_direction_80m)      assert(save_wind_direction_to_report(out_report, &hourly_object, &units_object, "wind_direction_80m", 80));
+    if(flags.wind_direction_120m)     assert(save_wind_direction_to_report(out_report, &hourly_object, &units_object, "wind_direction_120m", 120));
+    if(flags.wind_direction_180m)     assert(save_wind_direction_to_report(out_report, &hourly_object, &units_object, "wind_direction_180m", 180));
 
     score_json_array_dispose(&time_array);
 
@@ -281,6 +423,9 @@ SCORE_BOOL open_meteo_string_to_unit(const char *str, Open_Meteo_Unit *unit) {
     }
     else if(score_string_compare(str, "mm", false) == SCore_String_Compare_Result_Equal) {
         *unit = Open_Meteo_Unit_Millimeter;
+    }
+    else if(score_string_compare(str, "°", false) == SCore_String_Compare_Result_Equal) {
+        *unit = Open_Meteo_Unit_Angle;
     }
     else if(score_string_compare(str, "km/h", false) == SCore_String_Compare_Result_Equal) {
         *unit = Open_Meteo_Unit_Kilometers_Per_Hour;
