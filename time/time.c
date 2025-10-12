@@ -225,38 +225,45 @@ SCORE_BOOL score_time_write_unix_to_buffer(const SCore_Time *time, SCore_Buffer_
 }
 
 SCORE_BOOL score_time_from_json(const SCore_JSON_Object *json_object, SCore_Time *out_time) {
-    char *time_format = NULL;
+    if(score_json_is_string(json_object)) { /* ISO 8601. */
+        char *time_format = NULL;
+        assert(score_json_as_string(json_object, &time_format));
 
-    if(!score_json_is_string(json_object)) {
-        return SCORE_FALSE;
-    }
+        {
+            uint32_t year = 0;
+            uint32_t month = 0;
+            uint32_t day = 0;
 
-    assert(score_json_as_string(json_object, &time_format));
+            uint32_t hour = 0;
+            uint32_t minute = 0;
 
-    {
-        uint32_t year = 0;
-        uint32_t month = 0;
-        uint32_t day = 0;
+            int32_t result = sscanf(time_format,
+                "%u-%u-%u"
+                "T"
+                "%u:%u",
+                &year, &month, &day,
+                &hour, &minute
+            );
+            if(result == 0) {
+                return SCORE_FALSE;
+            }
 
-        uint32_t hour = 0;
-        uint32_t minute = 0;
-
-        int32_t result = sscanf(time_format,
-            "%u-%u-%u"
-            "T"
-            "%u:%u",
-            &year, &month, &day,
-            &hour, &minute
-        );
-        if(result == 0) {
-            return SCORE_FALSE;
+            assert(score_time_set_iso_8601(
+                out_time,
+                (uint16_t)year, (uint8_t)month, (uint8_t)day,
+                (uint8_t)hour, (uint8_t)minute, 0
+            ));
         }
 
-        score_time_set_iso_8601(
-            out_time,
-            (uint16_t)year, (uint8_t)month, (uint8_t)day,
-            (uint8_t)hour, (uint8_t)minute, 0
-        );
+        return SCORE_TRUE;
+    }
+    else if(score_json_is_number(json_object)) { /* Unix. */
+        double v = 0;
+        assert(score_json_as_number(json_object, &v));
+        assert(score_time_set_unix(out_time, (uint32_t)v, 0));
+    }
+    else {
+        return SCORE_FALSE;
     }
 
     return SCORE_TRUE;
