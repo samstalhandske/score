@@ -11,15 +11,15 @@ typedef struct {
     uint32_t length;
 } SCore_Buffer;
 
-SCore_Buffer score_buffer_create_from_backing(const uint8_t *ptr_to_backing, unsigned int capacity);
-void score_buffer_init_using_backing(SCore_Buffer *buffer, uint8_t *ptr_to_backing, unsigned int capacity);
+SCore_Buffer score_buffer_create_from_backing(const uint8_t *ptr_to_backing, uint32_t capacity);
+void score_buffer_init_using_backing(SCore_Buffer *buffer, uint8_t *ptr_to_backing, uint32_t capacity);
 
 SCORE_BOOL score_buffer_clear(SCore_Buffer *buffer);
 
 SCORE_BOOL score_buffer_has_data(SCore_Buffer *buffer);
 uint32_t score_buffer_space_left(SCore_Buffer *buffer);
 
-char *score_buffer_to_string(SCore_Buffer *buffer);
+char *score_buffer_to_string(SCore_Buffer *buffer); /* TODO: SS - Add 'allocated' to name. */
 
 #endif
 #else

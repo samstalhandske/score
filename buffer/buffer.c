@@ -3,7 +3,7 @@
 #include "buffer.h"
 #include <stdio.h>
 
-SCore_Buffer score_buffer_create_from_backing(const uint8_t *ptr_to_backing, unsigned int capacity) {
+SCore_Buffer score_buffer_create_from_backing(const uint8_t *ptr_to_backing, uint32_t capacity) {
     SCore_Buffer b;
     b.data = ptr_to_backing;
     b.capacity = capacity;
@@ -12,7 +12,7 @@ SCore_Buffer score_buffer_create_from_backing(const uint8_t *ptr_to_backing, uns
     return b;
 }
 
-void score_buffer_init_using_backing(SCore_Buffer *buffer, uint8_t *ptr_to_backing, unsigned int capacity) {
+void score_buffer_init_using_backing(SCore_Buffer *buffer, uint8_t *ptr_to_backing, uint32_t capacity) {
     *buffer = score_buffer_create_from_backing(ptr_to_backing, capacity);
 }
 
