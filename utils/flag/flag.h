@@ -3,9 +3,13 @@
 #ifndef SCORE_FLAGS_H
 #define SCORE_FLAGS_H
 
-SCORE_BOOL score_has_any_flag_set(unsigned int flags);
-SCORE_BOOL score_flag32_is_set(unsigned int flags, unsigned int flag);
-SCORE_BOOL score_flag64_is_set(unsigned long flags, unsigned long flag);
+typedef uint32_t SCore_Flags;
+typedef uint32_t SCore_Flag;
+
+SCORE_BOOL score_flag_add(SCore_Flags *flags, SCore_Flag flag);
+SCORE_BOOL score_flag_remove(SCore_Flags *flags, SCore_Flag flag);
+SCORE_BOOL score_flag_is_set(const SCore_Flags flags, SCore_Flag flag);
+SCORE_BOOL score_flag_has_any(const SCore_Flags flags);
 
 #endif
 #else

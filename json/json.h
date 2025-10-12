@@ -16,6 +16,7 @@ typedef struct {
 SCORE_BOOL score_json_parse(const char *data, SCore_JSON_Object *out_json_object);
 
 SCORE_BOOL score_json_get_object(const SCore_JSON_Object *json_object, const char *item_name, SCORE_BOOL case_sensitive, SCore_JSON_Object *out_json_object);
+SCORE_BOOL score_json_get_array_element(const SCore_JSON_Array *json_array, const uint32_t index, SCore_JSON_Object **out_json_object);
 
 SCORE_BOOL score_json_as_number(const SCore_JSON_Object *json_object, double *out_value);
 SCORE_BOOL score_json_as_string(const SCore_JSON_Object *json_object, char **out_value);

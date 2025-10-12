@@ -1,47 +1,43 @@
 #ifndef SCORE_TYPES_H
 #define SCORE_TYPES_H
 
-#ifdef SCORE_ENABLE_ASSERTS
-    #include <assert.h>
-#endif
+#include <limits.h>
+#include <assert.h>
 
-#ifdef SCORE_USE_STDINT
-    #include <stdint.h>
+typedef unsigned char uint8_t;
+typedef signed char int8_t;
+
+#if USHRT_MAX == 0xFFFF
+typedef unsigned short uint16_t;
+typedef signed short int16_t;
 #else
-    typedef signed char         int8_t;
-    typedef unsigned char       uint8_t;
-    typedef signed short        int16_t;
-    typedef unsigned short      uint16_t;
-    typedef signed int          int32_t;
-    typedef unsigned int        uint32_t;
-
-    #if defined(__GNUC__) || defined(_MSC_VER)
-        #ifndef i64_DEFINED
-            typedef signed long long int64_t;
-            #define i64_DEFINED
-        #endif
-        #ifndef u64_DEFINED
-            typedef unsigned long long  uint64_t;
-            #define u64_DEFINED
-        #endif
-    #endif
+#error "No suitable 16-bit type"
 #endif
 
-typedef uint8_t  u8;
-typedef int8_t   i8;
+#if UINT_MAX == 0xFFFFFFFF
+typedef unsigned int uint32_t;
+typedef signed int int32_t;
+#elif ULONG_MAX == 0xFFFFFFFF
+typedef unsigned long uint32_t;
+typedef signed long int32_t;
+#else
+#error "No suitable 32-bit type"
+#endif
+
+typedef uint8_t u8;
+typedef int8_t i8;
 typedef uint16_t u16;
-typedef int16_t  i16;
+typedef int16_t i16;
 typedef uint32_t u32;
-typedef int32_t  i32;
-typedef uint64_t u64;
-typedef int64_t  i64;
+typedef int32_t i32;
+typedef float f32;
 
 #ifndef NULL
 #define NULL 0
 #endif
 
 typedef uint8_t SCORE_BOOL;
-#define SCORE_TRUE  1
+#define SCORE_TRUE 1
 #define SCORE_FALSE 0
 
 #endif /* SCORE_TYPES_H */

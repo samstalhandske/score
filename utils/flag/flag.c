@@ -1,12 +1,35 @@
 #include "flag.h"
 
-SCORE_BOOL score_has_any_flag_set(unsigned int flags) {
-    return flags > 0;
+SCORE_BOOL score_flag_add(SCore_Flags *flags, SCore_Flag flag) {
+    if(score_flag_is_set(*flags, flag)) {
+        return SCORE_FALSE; /* Already set. */
+    }
+
+    *flags |= flag;
+    return SCORE_TRUE;
 }
 
-SCORE_BOOL score_flag32_is_set(unsigned int flags, unsigned int flag) {
-    return (flags & flag) != 0;
+SCORE_BOOL score_flag_remove(SCore_Flags *flags, SCore_Flag flag) {
+    if(!score_flag_is_set(*flags, flag)) {
+        return SCORE_FALSE; /* Not set. */
+    }
+
+    *flags &= ~flag;
+    return SCORE_TRUE;
 }
-SCORE_BOOL score_flag64_is_set(unsigned long flags, unsigned long flag) {
-    return (flags & flag) != 0;
+
+SCORE_BOOL score_flag_is_set(const SCore_Flags flags, SCore_Flag flag) {
+    if((flags & flag) == 0) {
+        return SCORE_FALSE;
+    }
+
+    return SCORE_TRUE;
+}
+
+SCORE_BOOL score_flag_has_any(const SCore_Flags flags) {
+    if(flags == 0) {
+        return SCORE_FALSE;
+    }
+
+    return SCORE_TRUE;
 }

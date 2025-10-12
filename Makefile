@@ -27,6 +27,13 @@ ifneq ($(filter SCORE_STRING,$(SCORE_DEFINES)),)
     SRC_FILES += $(wildcard string/*.c)
 endif
 
+ifneq ($(filter SCORE_TIME,$(SCORE_DEFINES)),)
+    SRC_FILES += $(wildcard time/*.c)
+endif
+ifneq ($(filter SCORE_TIME_NOW,$(SCORE_DEFINES)),)
+    SRC_FILES += $(wildcard time/now/*.c)
+endif
+
 ifneq ($(filter SCORE_BUFFER,$(SCORE_DEFINES)),)
     SRC_FILES += $(wildcard buffer/*.c)
     SRC_FILES += $(wildcard buffer/writer/*.c)
@@ -35,6 +42,7 @@ endif
 
 ifneq ($(filter SCORE_UTILS,$(SCORE_DEFINES)),)
     SRC_FILES += $(wildcard utils/flag/*.c)
+    SRC_FILES += $(wildcard utils/endian/*.c)
 endif
 
 INCLUDE_PATHS := .. .
@@ -49,10 +57,10 @@ OBJS = $(patsubst %,$(MY_OBJ_DIR)/%,$(SRC_FILES))
 OBJS := $(OBJS:.c=.o)
 
 all: $(OBJS)
-	@echo "Done building score."
+	@echo "Done compiling SCore! Flags: $(CFLAGS). Defines: $(SCORE_DEFINES)."
 
 $(MY_OBJ_DIR)/%.o: %.c
-	@echo "Compiling $< with flags $(CFLAGS) and defines $(SCORE_DEFINES) to $@..."
+	@echo "Compiling $< ..."
 	@mkdir -p $(dir $@)
 	@gcc -c $< $(CFLAGS) -o $@  $(SCORE_DEFINES_PREFIXED)
 

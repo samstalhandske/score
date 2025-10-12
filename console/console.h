@@ -8,5 +8,6 @@
 SCORE_BOOL score_console_read_from_stdin(char *buffer, unsigned int buffer_length);
 
 #endif
-
+#else
+#error "console.h included. SCORE_CONSOLE needs to be defined."
 #endif

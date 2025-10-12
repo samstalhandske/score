@@ -3,16 +3,23 @@
 #ifndef SCORE_BUFFER_H
 #define SCORE_BUFFER_H
 
+#include <stdlib.h>
+
 typedef struct {
-    const void *data;
-    unsigned int capacity;
-    unsigned int length;
+    const uint8_t *data;
+    uint32_t capacity;
+    uint32_t length;
 } SCore_Buffer;
 
-void score_buffer_init_using_backing(SCore_Buffer *buffer, void *ptr_to_backing, unsigned int capacity);
-SCore_Buffer score_buffer_create_from_backing(const void *ptr_to_backing, unsigned int capacity);
+SCore_Buffer score_buffer_create_from_backing(const uint8_t *ptr_to_backing, unsigned int capacity);
+void score_buffer_init_using_backing(SCore_Buffer *buffer, uint8_t *ptr_to_backing, unsigned int capacity);
+
+SCORE_BOOL score_buffer_clear(SCore_Buffer *buffer);
 
 SCORE_BOOL score_buffer_has_data(SCore_Buffer *buffer);
+uint32_t score_buffer_space_left(SCore_Buffer *buffer);
+
+char *score_buffer_to_string(SCore_Buffer *buffer);
 
 #endif
 #else

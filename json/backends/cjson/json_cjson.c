@@ -38,10 +38,7 @@ SCORE_BOOL score_json_get_object(const SCore_JSON_Object *json_object, const cha
         return SCORE_FALSE;
     }
 
-    printf("get object\n");
-    printf("Data: %p\n", json_object->data);
     cjson_data = cast_score_json_to_cjson(json_object);
-    printf("get object2\n");
 
     if(case_sensitive == SCORE_TRUE) {
         out_json_object->data = (void *)cJSON_GetObjectItemCaseSensitive(cjson_data, item_name);
@@ -56,6 +53,33 @@ SCORE_BOOL score_json_get_object(const SCore_JSON_Object *json_object, const cha
 
     return SCORE_TRUE;
 }
+
+SCORE_BOOL score_json_get_array_element(const SCore_JSON_Array *json_array, const uint32_t index, SCore_JSON_Object **out_json_object) {
+    SCore_JSON_Object *obj = NULL;
+
+    if(json_array == NULL) {
+        return SCORE_FALSE;
+    }
+    if(out_json_object == NULL) {
+        return SCORE_FALSE;
+    }
+    if(json_array->size == 0) {
+        return SCORE_FALSE;
+    }
+    if(json_array->size <= index) {
+        return SCORE_FALSE;
+    }
+    if(json_array->data == NULL) {
+        return SCORE_FALSE;
+    }
+
+    obj = &json_array->data[index];
+    assert(obj != NULL);
+
+    *out_json_object = obj;
+    return SCORE_TRUE;
+}
+
 
 SCORE_BOOL score_json_as_number(const SCore_JSON_Object *json_object, double *out_value) {
     cJSON *json_number_object = NULL;
@@ -91,9 +115,6 @@ SCORE_BOOL score_json_as_string(const SCore_JSON_Object *json_object, char **out
         return SCORE_FALSE;
     }
     if(out_string == NULL) {
-        return SCORE_FALSE;
-    }
-    if(*out_string == NULL) {
         return SCORE_FALSE;
     }
 
