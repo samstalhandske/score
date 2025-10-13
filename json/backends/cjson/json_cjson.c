@@ -213,6 +213,15 @@ SCORE_BOOL score_json_is_array(const SCore_JSON_Object *json_object) {
     return SCORE_TRUE;
 }
 
+void score_json_print_to_stdout(const SCore_JSON_Object json_object) {
+    char *printed_json = NULL;
+    assert(json_object.data != NULL);
+
+    printed_json = cJSON_Print((cJSON *)json_object.data);
+    printf("%s\n", printed_json);
+
+    free(printed_json);
+}
 
 SCORE_BOOL score_json_write_to_buffer(SCore_Buffer_Writer *writer, const SCore_JSON_Object json_object) {
     char *printed_json = cJSON_Print((cJSON *)json_object.data);
@@ -242,6 +251,7 @@ SCORE_BOOL score_json_dispose(SCore_JSON_Object *json_object) {
 
 SCORE_BOOL score_json_array_dispose(SCore_JSON_Array *json_array) {
     if(json_array == NULL) {
+        printf("Null\n");
         return SCORE_FALSE;
     }
 
@@ -252,7 +262,7 @@ SCORE_BOOL score_json_array_dispose(SCore_JSON_Array *json_array) {
     json_array->size = 0;
     json_array->data = NULL;
 
-    return SCORE_FALSE;
+    return SCORE_TRUE;
 }
 
 #endif

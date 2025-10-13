@@ -27,6 +27,7 @@ SCORE_BOOL score_json_is_number(const SCore_JSON_Object *json_object);
 SCORE_BOOL score_json_is_string(const SCore_JSON_Object *json_object);
 SCORE_BOOL score_json_is_array(const SCore_JSON_Object *json_object);
 
+void score_json_print_to_stdout(const SCore_JSON_Object json_object);
 SCORE_BOOL score_json_write_to_buffer(SCore_Buffer_Writer *writer, const SCore_JSON_Object json_object);
 
 SCORE_BOOL score_json_dispose(SCore_JSON_Object *json_object);
